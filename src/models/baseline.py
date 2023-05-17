@@ -95,9 +95,9 @@ class Decoder(nn.Module):
         
         self.dropout = nn.Dropout(p=dropout)# <YOUR CODE HERE>
         
-    def forward(self, input, hidden, cell):
+    def forward(self, input_data, hidden, cell):
         
-        #input = [batch size]
+        #input_data = [batch size]
         #hidden = [n layers * n directions, batch size, hid dim]
         #cell = [n layers * n directions, batch size, hid dim]
         
@@ -105,12 +105,12 @@ class Decoder(nn.Module):
         #hidden = [n layers, batch size, hid dim]
         #context = [n layers, batch size, hid dim]
         
-        input = input.unsqueeze(0)
+        input_data = input_data.unsqueeze(0)
         
-        #input = [1, batch size]
+        #input_data = [1, batch size]
         
         # Compute an embedding from the input data and apply dropout to it
-        embedded = self.dropout(self.embedding(input))# <YOUR CODE HERE>
+        embedded = self.dropout(self.embedding(input_data))# <YOUR CODE HERE>
         
         #embedded = [1, batch size, emb dim]
         
@@ -169,14 +169,14 @@ class Seq2Seq(nn.Module):
         hidden, cell = self.encoder(src)
         
         #first input to the decoder is the <sos> tokens
-        input = trg[0,:]
+        input_data = trg[0,:]
         
         for t in range(1, max_len):
             
-            output, hidden, cell = self.decoder(input, hidden, cell)
+            output, hidden, cell = self.decoder(input_data, hidden, cell)
             outputs[t] = output
             teacher_force = random.random() < teacher_forcing_ratio
             top1 = output.max(1)[1]
-            input = (trg[t] if teacher_force else top1)
+            input_data = (trg[t] if teacher_force else top1)
         
         return outputs
