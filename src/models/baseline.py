@@ -1,15 +1,14 @@
+import random
+import math
+import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
 import torchtext
-from torchtext.datasets import TranslationDataset, Multi30k
-from torchtext.data import Field, BucketIterator
+from torchtext.datasets import Multi30k
 
-import random
-import math
-import time
-
+from data_utils.dataset import TranslationDataset
 
 class Encoder(nn.Module):
     def __init__(self, input_dim, emb_dim, hid_dim, n_layers, dropout):
@@ -150,8 +149,8 @@ class Seq2Seq(nn.Module):
         assert encoder.n_layers == decoder.n_layers, \
             "Encoder and decoder must have equal number of layers!"
         
-    def forward(self, src, trg, teacher_forcing_ratio = 0.5):
-        
+    def forward(self, src_trg, teacher_forcing_ratio = 0.5):
+        src, trg = src_trg
         #src = [src sent len, batch size]
         #trg = [trg sent len, batch size]
         #teacher_forcing_ratio is probability to use teacher forcing
