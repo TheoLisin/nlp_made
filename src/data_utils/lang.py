@@ -58,7 +58,7 @@ class Lang(object):
 
 def read_langs(lang1: str, lang2: str, file_or_lines: Union[str, Path, List[str]]):
     # Read the file and split into lines
-    if isinstance(file_or_lines, List):
+    if isinstance(file_or_lines, list):
         lines = file_or_lines
     else:
         with open(file_or_lines, "r", encoding='utf-8') as flines:
@@ -83,9 +83,3 @@ def read_langs(lang1: str, lang2: str, file_or_lines: Union[str, Path, List[str]
     lv2.create_vocab()
 
     return lv1, lv2, pairs
-
-
-pth = Path(__file__).parent / ".." / "data.txt"
-en_lang, ru_lang, pairs = read_langs("en", "ru", pth)
-
-print(en_lang)
