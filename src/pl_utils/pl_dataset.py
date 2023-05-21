@@ -21,8 +21,8 @@ class PlTranslationDataset(pl.LightningDataModule):
         self.val_dataset = val_dataset
         self.train_bs = train_bs
         self.test_bs = test_bs
-        self.src_pad = self.train_dataset.source_lang[PAD]
-        self.trg_pad = self.train_dataset.target_lang[PAD]
+        self.src_pad = self.train_dataset.source_lang.vocab[PAD]
+        self.trg_pad = self.train_dataset.target_lang.vocab[PAD]
 
     def train_dataloader(self):
         return DataLoader(
@@ -42,6 +42,8 @@ class PlTranslationDataset(pl.LightningDataModule):
         )
 
     def collate_batch(self, batch: Tuple[Tensor, Tensor]):
+        print("Batch collation")
+        print(type(batch), batch)
         src, trg = batch
         src_pad = pad_sequence(src, padding_value=self.src_pad)
         trg_pad = pad_sequence(trg, padding_value=self.trg_pad)
