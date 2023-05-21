@@ -149,8 +149,8 @@ class Seq2Seq(nn.Module):
         assert encoder.n_layers == decoder.n_layers, \
             "Encoder and decoder must have equal number of layers!"
         
-    def forward(self, src_trg, teacher_forcing_ratio = 0.5):
-        src, trg = src_trg
+    def forward(self, data, teacher_forcing_ratio = 0.5):
+        src, trg = data
         #src = [src sent len, batch size]
         #trg = [trg sent len, batch size]
         #teacher_forcing_ratio is probability to use teacher forcing
