@@ -16,12 +16,17 @@ class ModelWrapper(pl.LightningModule):
         self.loss = criterion_fn
         self.optimizer_fn = optimizer_fn
 
-    def forward(self, x):
-        return self.model(x)
+    def forward(self, data, batch_idx):
+        return self.model(data)
             
     def step(self, batch, batch_idx, metric, prog_bar=False):
         x, y = batch
-        translation = self.model(x)
+        try:
+            translation = self.forward(x, batch_idx)
+        except ValueError:
+            translation = self.forward(batch, batch_idx)
+        # print(translation.view(-1, translation.shape[-1]).shape)
+        # print(y.view(-1).shape)
         loss = self.loss(translation, y)
         self.log(metric, loss, prog_bar=prog_bar)
         return loss
