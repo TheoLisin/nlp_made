@@ -36,7 +36,7 @@ class TranslationDataset(Dataset):
             self.source_lang = source_lang
             self.target_lang = target_lang
             self.source_name = source_lang.name
-            self.source_lang = target_lang.name
+            self.target_name = target_lang.name
             _, _, self.pairs = read_langs(self.source_name, self.target_name, lines)
         
         self.enc_pairs = self.encode_all()
@@ -61,6 +61,3 @@ class TranslationDataset(Dataset):
         source = self.enc_pairs[idx][self.source_name]
         target = self.enc_pairs[idx][self.target_name]
         return tensor(source), tensor(target)
-
-
-        
