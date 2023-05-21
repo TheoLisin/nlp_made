@@ -1,5 +1,5 @@
 import pytorch_lightning as pl
-from typing import Any, Tuple
+from typing import Any, Tuple, List
 from torch import Tensor
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
@@ -41,10 +41,10 @@ class PlTranslationDataset(pl.LightningDataModule):
             collate_fn=self.collate_batch,
         )
 
-    def collate_batch(self, batch: Tuple[Tensor, Tensor]):
-        print("Batch collation")
-        print(type(batch), batch)
-        src, trg = batch
+    def collate_batch(self, batch: List[Tuple[Tensor, Tensor]]):
+        src = [src_b[0] for src_b in batch]
+        trg = [trg_b[1] for trg_b in batch]
+
         src_pad = pad_sequence(src, padding_value=self.src_pad)
         trg_pad = pad_sequence(trg, padding_value=self.trg_pad)
         return src_pad, trg_pad
