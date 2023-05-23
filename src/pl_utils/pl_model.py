@@ -15,11 +15,17 @@ class ModelWrapper(pl.LightningModule):
         self.model = model
         self.loss = criterion_fn
         self.optimizer_fn = optimizer_fn
+        self.teacher_forcing_ratio = 0.5
 
     def forward(self, data, batch_idx, **kwargs) -> Tensor:
+        if "teacher_forcing_ratio" not in kwargs:
+            kwargs["teacher_forcing_ratio"] = self.teacher_forcing_ratio
         return self.model(data, **kwargs)
             
     def step(self, batch, batch_idx, metric, prog_bar=False):
+        if "train" in metric:
+            self.teacher_forcing_ratio *= 0.9999
+            self.log("tfr", self.teacher_forcing_ratio)
         x, y = batch
         batch_size = x.shape[1]
         try:
@@ -31,16 +37,6 @@ class ModelWrapper(pl.LightningModule):
         loss = self.loss(translation, y)
         self.log(metric, loss, prog_bar=prog_bar, batch_size=batch_size)
         return loss
-
-    def test_step(self, batch, batch_idx, prog_bar=False):
-        x, y = batch
-        try:
-            translation = self.forward(x, batch_idx)
-        except ValueError:
-            translation = self.forward(batch, batch_idx)
-        
-        gen = translation.argmax(dim=-1).detach().cpu().numpy()
-        return y, gen
 
     def training_step(self, batch, batch_idx):
         return self.step(batch, batch_idx, "train_loss")

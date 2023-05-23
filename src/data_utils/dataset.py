@@ -38,6 +38,7 @@ class TranslationDataset(Dataset):
             self.target_name = target_lang.name
             _, _, self.pairs = read_langs(self.source_name, self.target_name, lines)
         else:
+            print(type(target_lang))
             raise TypeError
         
         self.enc_pairs = self.encode_all()
