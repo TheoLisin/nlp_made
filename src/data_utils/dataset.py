@@ -31,12 +31,14 @@ class TranslationDataset(Dataset):
             )
             self.source_name = source_lang
             self.target_name = target_lang
-        else:
+        elif isinstance(target_lang, Lang):
             self.source_lang = source_lang
             self.target_lang = target_lang
             self.source_name = source_lang.name
             self.target_name = target_lang.name
             _, _, self.pairs = read_langs(self.source_name, self.target_name, lines)
+        else:
+            raise TypeError
         
         self.enc_pairs = self.encode_all()
     
