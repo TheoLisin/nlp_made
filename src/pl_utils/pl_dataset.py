@@ -13,12 +13,16 @@ class PlTranslationDataset(pl.LightningDataModule):
         self,
         train_dataset: TranslationDataset,
         val_dataset: TranslationDataset,
+        test_dataset: TranslationDataset,
         train_bs: int,
         test_bs: int,
     ):
         super().__init__()
+        self.target_lang = train_dataset.target_lang
+        self.source_lang = train_dataset.source_lang
         self.train_dataset = train_dataset
         self.val_dataset = val_dataset
+        self.test_dataset = test_dataset
         self.train_bs = train_bs
         self.test_bs = test_bs
         self.src_pad = self.train_dataset.source_lang.vocab[PAD]
@@ -36,6 +40,14 @@ class PlTranslationDataset(pl.LightningDataModule):
     def val_dataloader(self):
         return DataLoader(
             self.val_dataset,
+            batch_size=self.test_bs,
+            num_workers=4,
+            collate_fn=self.collate_batch,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(
+            self.test_dataset,
             batch_size=self.test_bs,
             num_workers=4,
             collate_fn=self.collate_batch,
