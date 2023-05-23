@@ -21,6 +21,10 @@ torchtext = "^0.15.2"
 jupyterlab = "^3.6.3"
 subword-nmt = "^0.3.8"
 pytorch-lightning = "^2.0.2"
+tensorboard = "^2.13.0"
+jupyter = "^1.0.0"
+sympy = "^1.12"
+torch-tb-profiler = "^0.4.1"
 
 [[tool.poetry.source]]
 name = "torch"
