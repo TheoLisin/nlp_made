@@ -1,3 +1,4 @@
+import string
 from collections import Counter
 from pathlib import Path
 from typing import List, Optional, Union
@@ -22,6 +23,7 @@ class Lang(object):
 
     def add_sentence(self, sentence: str) -> str:
         sent = self._tok.tokenize(sentence.lower())
+        sent = [w for w in sent if w not in string.punctuation]
         self._counter.update(sent)
         return sent
     
@@ -44,7 +46,15 @@ class Lang(object):
         return self.encode(toks, pad_len)
 
     def decode(self, tokens: List[int]):
-        return [self._vocab.get_itos()[t] for t in tokens]
+        seq = []
+        for tid in tokens:
+            tok = self._vocab.get_itos()[tid]
+            if tok in [SOS, PAD, UNK]:
+                continue
+            elif tok == EOS:
+                return seq
+            seq.append(tok)
+        return seq
 
     @property
     def vocab(self):
