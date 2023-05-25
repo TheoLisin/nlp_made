@@ -66,7 +66,7 @@ class Lang(object):
         return self.name
 
 
-def read_langs(lang1: str, lang2: str, file_or_lines: Union[str, Path, List[str]]):
+def read_langs(lang1: str, lang2: str, file_or_lines: Union[str, Path, List[str]], split: bool = True):
     # Read the file and split into lines
     if isinstance(file_or_lines, list):
         lines = file_or_lines
@@ -82,12 +82,21 @@ def read_langs(lang1: str, lang2: str, file_or_lines: Union[str, Path, List[str]
         lng1_sent, lng2_sent = line.strip().split('\t')
         lng1_toks = lv1.add_sentence(lng1_sent)
         lng2_toks = lv2.add_sentence(lng2_sent)
-        pairs.append(
-            {
-                lang1: lng1_toks,
-                lang2: lng2_toks,
-            }
-        )
+
+        if split:
+            pairs.append(
+                {
+                    lang1: lng1_toks,
+                    lang2: lng2_toks,
+                }
+            )
+        else:
+            pairs.append(
+                {
+                    lang1: lng1_sent,
+                    lang2: lng2_sent,
+                }
+            )
 
     lv1.create_vocab()
     lv2.create_vocab()
